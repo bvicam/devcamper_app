@@ -1,6 +1,7 @@
 const express = require('express');
 const colors = require('colors');
 const dotenv = require('dotenv');
+const morgan = require('morgan');
 
 // Route files
 const bootcamps = require('./routes/bootcamps');
@@ -28,7 +29,11 @@ colors.setTheme({
 });
 
 // Apply middlewares
-app.use(logger);
+// app.use(logger);
+// dev logging middleware
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'))
+}
 app.use(bootcampsApiUrl, bootcamps);
 
 app.listen(
