@@ -6,6 +6,7 @@ const morgan = require('morgan');
 // Route files
 const bootcamps = require('./routes/bootcamps');
 const logger = require('./middleware/logger');
+const errorHandler = require('./middleware/errorHandler');
 const connectDB = require('./config/db')
 
 // Load env vars
@@ -33,8 +34,6 @@ colors.setTheme({
   error: 'red'
 });
 
-// Apply middlewares
-// app.use(logger);
 // dev logging middleware
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
@@ -43,6 +42,10 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json());
 
 app.use(bootcampsApiUrl, bootcamps);
+
+// Apply middlewares
+// app.use(logger);
+app.use(errorHandler);
 
 // Handle unhandle promise Rejection
 const server = app.listen(
