@@ -20,8 +20,6 @@ const errorHandler = (err, req, res, next) => {
 
   // Mongoose Validation Error
   if (err.name === 'ValidationError') {
-    console.log(`rakesh ${err.error}`.yellow.bold);
-
     const msg = err.message;
     error = new ErrorResponse(msg, 400);
   }
