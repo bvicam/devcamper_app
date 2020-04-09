@@ -59,6 +59,19 @@ const BootcampSchema = mongoose.Schema({
     zipcode: String,
     country: String
   },
+  careers: {
+    // Array of strings
+    type: [String],
+    required: true,
+    enum: [
+      'Web Development',
+      'Mobile Development',
+      'UI/UX',
+      'Data Science',
+      'Business',
+      'Other'
+    ]
+  },
   averageRating: {
     type: Number,
     min: [1, 'Rating must be at least 1'],
@@ -100,7 +113,7 @@ BootcampSchema.pre('save', function (next) {
 BootcampSchema.pre('save', async function (next) {
   const loc = await geocoder.geocode(this.address);
   console.log('rakesh', loc);
-  
+
   this.location = {
     type: 'Point',
     coordinates: [loc[0].longitude, loc[0].latitude],
