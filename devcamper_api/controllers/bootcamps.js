@@ -7,15 +7,48 @@ const asyncHandler = require('../middleware/asyncHandler')
 // @routes  GET /api/v1/bootcamps
 // @access  Public
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
-  let queryStr = JSON.stringify(req.query);
+  let query;
 
-  // in = sreachin list, gt = greaterthen, gte= greater then equal
+  // Copy req.query
+  const reqQuery = { ...req.query };
+
+  // Fields to Execude
+  const removeField = ['select'];
+
+  // Loop over removeField and delete the from reqQuery
+  removeField.forEach(i => delete reqQuery[i]);
+
+  // Create query string
+  let queryStr = JSON.stringify(reqQuery);
+
+
+  // Create operator($gt, $gte, etc)
+  // Advance Search: in = sreachin list, gt = greaterthen, gte= greater then equal
   // lt/lte = less  then / less then equal 
   queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
 
-  const bootcamps = await Bootcamp.find(JSON.parse(queryStr));
+  // Finding Resource
+  query = Bootcamp.find(JSON.parse(queryStr));
+
+  // Select Fields
+  if (req.query.select) {
+    const fields = req.query.select.split(',').join(' ');
+    query = query.select(fields);
+  }
+  console.log('rakesh', req.query.sort);
+  // Sort
+  if (req.query.sort) {
+    const sortBy = req.query.sort.split(',').join(' ');
+    query = query.sort(sortBy);
+  } else {
+    query = query.sort('-createdAt');
+  }
+  console.log('rakesh', query);
+  // Execute Query
+  const bootcamps = await query;
+  //Sending response  
   res.status(200).json({
-    sucess: true,
+    success: true,
     length: bootcamps.length,
     data: bootcamps
   });
