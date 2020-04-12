@@ -13,7 +13,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   const reqQuery = { ...req.query };
 
   // Fields to Execude
-  const removeField = ['select'];
+  const removeField = ['select', 'sort', 'page', 'limit'];
 
   // Loop over removeField and delete the from reqQuery
   removeField.forEach(i => delete reqQuery[i]);
@@ -35,7 +35,6 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
     const fields = req.query.select.split(',').join(' ');
     query = query.select(fields);
   }
-  console.log('rakesh', req.query.sort);
   // Sort
   if (req.query.sort) {
     const sortBy = req.query.sort.split(',').join(' ');
@@ -43,13 +42,47 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   } else {
     query = query.sort('-createdAt');
   }
-  console.log('rakesh', query);
+
+  // Pagintation
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 1;
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const total = await Bootcamp.countDocuments();
+
+  query = query.skip(startIndex).limit(limit);
   // Execute Query
   const bootcamps = await query;
+  console.log('rakesh', req.baseUrl);
+
+  // Pagination Result
+  const pagination = {
+    selfLink: {
+      next: null,
+      prev: null
+    }
+  };
+  if (endIndex < total) {
+    pagination.next = {
+      page: page + 1,
+      limit,
+      total
+    };
+    pagination.selfLink.next = `${req.baseUrl}?page=${page + 1}`;
+  }
+  if (startIndex > 0) {
+    pagination.prev = {
+      page: page - 1,
+      limit,
+      total
+    };
+    pagination.selfLink.prev = `${req.baseUrl}?page=${page - 1}`;
+  }
   //Sending response  
   res.status(200).json({
     success: true,
     length: bootcamps.length,
+    pagination,
     data: bootcamps
   });
 });
