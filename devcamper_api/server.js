@@ -8,6 +8,7 @@ dotenv.config({ path: './config/config.env' });
 
 // Route files
 const bootcamps = require('./routes/bootcamps');
+const courses = require('./routes/courses');
 const logger = require('./middleware/logger');
 const errorHandler = require('./middleware/errorHandler');
 const connectDB = require('./config/db')
@@ -16,6 +17,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 // Bootcamps version 1
 const bootcampsApiUrl = '/api/v1/bootcamps';
+const couresApiUrl = '/api/v1/courses';
 
 // Connect to DB
 connectDB();
@@ -42,6 +44,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json());
 
 app.use(bootcampsApiUrl, bootcamps);
+app.use(couresApiUrl, courses);
 
 // Apply middlewares
 // app.use(logger);
