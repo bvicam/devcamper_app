@@ -28,7 +28,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
 
   // Finding Resource
-  query = Bootcamp.find(JSON.parse(queryStr));
+  query = Bootcamp.find(JSON.parse(queryStr)).populate('courses');
 
   // Select Fields
   if (req.query.select) {
@@ -45,7 +45,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
 
   // Pagintation
   const page = parseInt(req.query.page, 10) || 1;
-  const limit = parseInt(req.query.limit, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 10;
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
   const total = await Bootcamp.countDocuments();
@@ -53,7 +53,6 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   query = query.skip(startIndex).limit(limit);
   // Execute Query
   const bootcamps = await query;
-  console.log('rakesh', req.baseUrl);
 
   // Pagination Result
   const pagination = {
@@ -138,10 +137,14 @@ exports.updateBootcamps = asyncHandler(async (req, res, next) => {
 // @routes  DELETE /api/v1/bootcamp/:id
 // @access  Public
 exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
-  const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+  const bootcamp = await Bootcamp.findById(req.params.id);
   if (!bootcamp) {
     return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404));
   }
+
+  // Calling middleware 
+  bootcamp.remove()
+  
   res.status(200).json({
     sucess: true,
     data: {}
