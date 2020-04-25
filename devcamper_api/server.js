@@ -1,7 +1,9 @@
 const express = require('express');
+const path = require('path');
 const colors = require('colors');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
+const fileupload = require('express-fileupload');
 
 // Load env vars
 dotenv.config({ path: './config/config.env' });
@@ -40,6 +42,15 @@ colors.setTheme({
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
 }
+
+// File uploading.
+app.use(fileupload());
+
+console.log('naresh', path.join(__dirname, 'public'));
+
+// Set static folder
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Body parser
 app.use(express.json());
 

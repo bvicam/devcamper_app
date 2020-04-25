@@ -5,7 +5,7 @@ const coursesRouter = require('./courses');
 const {
   getBootcamp, getBootcamps,
   createBootcamps, deleteBootcamp,
-  updateBootcamps, getBootcampsInRadius
+  updateBootcamps, getBootcampsInRadius, bootcampPhotoUpload
 } = require('../controllers/bootcamps')
 
 // Re-route to other router
@@ -14,6 +14,8 @@ router.use('/:bootcampId/courses', coursesRouter);
 router
   .route('/radius/:zipcode/:distance')
   .get(getBootcampsInRadius)
+
+router.route('/:id/photo').put(bootcampPhotoUpload);
 
 router
   .route('/')
