@@ -11,6 +11,7 @@ dotenv.config({ path: './config/config.env' });
 // Route files
 const bootcamps = require('./routes/bootcamps');
 const courses = require('./routes/courses');
+const auth = require('./routes/auth');
 const logger = require('./middleware/logger');
 const errorHandler = require('./middleware/errorHandler');
 const connectDB = require('./config/db')
@@ -20,6 +21,7 @@ const PORT = process.env.PORT || 5000;
 // Bootcamps version 1
 const bootcampsApiUrl = '/api/v1/bootcamps';
 const couresApiUrl = '/api/v1/courses';
+const authApiUrl = '/api/v1/auth';
 
 // Connect to DB
 connectDB();
@@ -46,16 +48,16 @@ if (process.env.NODE_ENV === 'development') {
 // File uploading.
 app.use(fileupload());
 
-console.log('naresh', path.join(__dirname, 'public'));
-
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Body parser
 app.use(express.json());
 
+// Mount Router
 app.use(bootcampsApiUrl, bootcamps);
 app.use(couresApiUrl, courses);
+app.use(authApiUrl, auth);
 
 // Apply middlewares
 // app.use(logger);
