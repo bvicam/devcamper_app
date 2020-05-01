@@ -4,6 +4,7 @@ const colors = require('colors');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const fileupload = require('express-fileupload');
+const cookieParser = require('cookie-parser');
 
 // Load env vars
 dotenv.config({ path: './config/config.env' });
@@ -53,6 +54,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Body parser
 app.use(express.json());
+
+// Cookie-parser
+app.use(cookieParser());
 
 // Mount Router
 app.use(bootcampsApiUrl, bootcamps);
