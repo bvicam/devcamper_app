@@ -13,12 +13,12 @@ router.route('/')
     path: 'bootcamp',
     select: 'name description'
   }), getReviews)
-  .post(protect, authorize('publisher', 'admin'), addReview);
-
+  .post(protect, authorize('user', 'admin'), addReview);
+ 
 router
   .route('/:id')
   .get(getReview)
-  .put(protect, authorize('publisher', 'admin'), updateReview)
-  .delete(protect, authorize('publisher', 'admin'), deleteReview);
+  .put(protect, authorize('user', 'admin'), updateReview)
+  .delete(protect, authorize('user', 'admin'), deleteReview);
 
 module.exports = router;
