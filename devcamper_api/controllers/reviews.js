@@ -47,7 +47,7 @@ exports.addReview = asyncHandler(async (req, res, next) => {
   req.body.user = req.user.id;
   const bootcamp = await Bootcamp.findById(req.params.bootcampId);
   if (!bootcamp) {
-    return next(new ErrorResponse(`No Bootcamp found by id: ${req.params.bootcampId}`.red), 404);
+    return next(new ErrorResponse(`No Bootcamp found by id: ${req.params.bootcampId}`), 404);
   }
   // Make sure user is bootcamp owner
   if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
@@ -66,7 +66,7 @@ exports.addReview = asyncHandler(async (req, res, next) => {
 exports.updateReview = asyncHandler(async (req, res, next) => {
   let review = await Review.findById(req.params.id);
   if (!Review) {
-    return next(new ErrorResponse(`No Review found by id: ${req.params.id}`.red), 404);
+    return next(new ErrorResponse(`No Review found by id: ${req.params.id}`), 404);
   }
   // Make sure user is bootcamp owner
   if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
