@@ -66,17 +66,22 @@ exports.addReview = asyncHandler(async (req, res, next) => {
 });
 
 // @desc  Update review
-// @routes  PUT /api/v1/bootcamps/:bootcampId/reviews
+// @routes  PUT /api/v1/reviews/:id
 // @access  Private
 exports.updateReview = asyncHandler(async (req, res, next) => {
   let review = await Review.findById(req.params.id);
-  if (!Review) {
-    return next(new ErrorResponse(`No Review found by id: ${req.params.id}`), 404);
+
+  if (!review) {
+    return next(
+      new ErrorResponse(`No review with the id of ${req.params.id}`, 404)
+    );
   }
-  // Make sure user is bootcamp owner
+
+  // Make sure review belongs to user or user is admin
   if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
-    return next(new ErrorResponse(`User ${req.user.id} is not authorize to update a review ${review._id}`, 401));
+    return next(new ErrorResponse(`Not authorized to update review`, 401));
   }
+
   review = await Review.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true
@@ -88,20 +93,25 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
   });
 });
 
-// @desc  Delete review
-// @routes  DELETE /api/v1/bootcamps/:bootcampId/reviews
-// @access  Private
+// @desc      Delete review
+// @route     DELETE /api/v1/reviews/:id
+// @access    Private
 exports.deleteReview = asyncHandler(async (req, res, next) => {
   const review = await Review.findById(req.params.id);
 
   if (!review) {
-    return next(new ErrorResponse(`No review found by id: ${req.params.id}`.red), 404);
+    return next(
+      new ErrorResponse(`No review with the id of ${req.params.id}`, 404)
+    );
   }
-  // Make sure user is bootcamp owner
+
+  // Make sure review belongs to user or user is admin
   if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
-    return next(new ErrorResponse(`User ${req.user.id} is not authorize to delete a review ${review._id}`, 401));
+    return next(new ErrorResponse(`Not authorized to update review`, 401));
   }
-  await review.remove()
+
+  await review.remove();
+
   res.status(200).json({
     success: true,
     data: {}
