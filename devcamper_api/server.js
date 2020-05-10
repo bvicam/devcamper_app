@@ -14,8 +14,13 @@ const bootcamps = require('./routes/bootcamps');
 const courses = require('./routes/courses');
 const auth = require('./routes/auth');
 const users = require('./routes/users');
+const reviews = require('./routes/reviews');
+
+// Middlewares 
 const logger = require('./middleware/logger');
 const errorHandler = require('./middleware/errorHandler');
+
+// Connect to DB.
 const connectDB = require('./config/db')
 
 const app = express();
@@ -25,6 +30,7 @@ const bootcampsApiUrl = '/api/v1/bootcamps';
 const couresApiUrl = '/api/v1/courses';
 const authApiUrl = '/api/v1/auth';
 const usersApiUrl = '/api/v1/users';
+const reviewsApiUrl = '/api/v1/reviews';
 
 // Connect to DB
 connectDB();
@@ -65,6 +71,7 @@ app.use(bootcampsApiUrl, bootcamps);
 app.use(couresApiUrl, courses);
 app.use(authApiUrl, auth);
 app.use(usersApiUrl, users);
+app.use(reviewsApiUrl, reviews);
 
 // Apply middlewares
 // app.use(logger);
