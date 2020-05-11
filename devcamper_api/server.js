@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
+const mongoSanitize = require('express-mongo-sanitize');
 
 // Load env vars
 dotenv.config({ path: './config/config.env' });
@@ -63,15 +64,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Body parser
 app.use(express.json());
 
+// Mongo Sanitize
+app.use(mongoSanitize());
+
 // Cookie-parser
 app.use(cookieParser());
 
 // Mount Router
-app.use(bootcampsApiUrl, bootcamps);
-app.use(couresApiUrl, courses);
-app.use(authApiUrl, auth);
-app.use(usersApiUrl, users);
-app.use(reviewsApiUrl, reviews);
+app.use('/api/v1/bootcamps', bootcamps);
+app.use('/api/v1/courses', courses);
+app.use('/api/v1/auth', auth);
+app.use('/api/v1/users', users);
+app.use('/api/v1/reviews', reviews);
 
 // Apply middlewares
 // app.use(logger);
