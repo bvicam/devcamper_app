@@ -39,7 +39,7 @@ exports.createBootcamps = asyncHandler(async (req, res, next) => {
 
   // If the user is not admin. they can only add one bootcamp.
   if (publishedBotcamp && req.user.role !== 'admin') {
-    next(new ErrorResponse(`The user with ID ${req.user.id} has already published a bootcamp.`, 400))
+    return next(new ErrorResponse(`The user with ID ${req.user.id} has already published a bootcamp.`, 400))
   }
   const bootcamp = await Bootcamp.create(req.body);
   res.status(201).json({

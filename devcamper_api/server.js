@@ -6,6 +6,8 @@ const morgan = require('morgan');
 const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const xss = require('xss-clean');
 
 // Load env vars
 dotenv.config({ path: './config/config.env' });
@@ -64,8 +66,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Body parser
 app.use(express.json());
 
-// Mongo Sanitize
+// Mongo Sanitize for preventing NoSQL Injection  Sanitize Data
 app.use(mongoSanitize());
+
+// Set security headers
+app.use(helmet());
+
+// Preventing XSS attacks
+app.use(xss());
 
 // Cookie-parser
 app.use(cookieParser());
