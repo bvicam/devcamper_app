@@ -7,6 +7,9 @@ const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const hpp = require('hpp');
+const cors = require('cors');
 const xss = require('xss-clean');
 
 // Load env vars
@@ -74,6 +77,19 @@ app.use(helmet());
 
 // Preventing XSS attacks
 app.use(xss());
+
+// Rate limiting - 10 reqs per 10 mins max
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 mins
+  max: 100
+});
+app.use(limiter);
+
+// Prevent http param pollution
+app.use(hpp());
+
+// Enable CORS
+app.use(cors());
 
 // Cookie-parser
 app.use(cookieParser());
